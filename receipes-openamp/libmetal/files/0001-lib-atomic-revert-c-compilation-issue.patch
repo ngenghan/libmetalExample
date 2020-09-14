@@ -1,0 +1,29 @@
+From ed356b51aa78b710bad6894808c47bf277621d53 Mon Sep 17 00:00:00 2001
+From: Ben Levinsky <ben.levinsky@xilinx.com>
+Date: Tue, 9 Jul 2019 15:38:52 -0700
+Subject: [PATCH] lib: atomic: revert c++ compilation issue
+
+Commit 81f85dc caused compilation errors when compiling libmetal
+applications using C++. Reverting this commit.
+
+Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
+---
+ lib/atomic.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/lib/atomic.h b/lib/atomic.h
+index 4361bf4..39d21d4 100644
+--- a/lib/atomic.h
++++ b/lib/atomic.h
+@@ -17,8 +17,6 @@
+ #if defined(HAVE_STDATOMIC_H) && !defined(__STDC_NO_ATOMICS__) && \
+ 	!defined(__cplusplus)
+ # include <stdatomic.h>
+-#elif defined(__cplusplus)
+-# include <atomic>
+ #elif defined(__GNUC__)
+ # include <metal/compiler/gcc/atomic.h>
+ #else
+-- 
+2.7.4
+

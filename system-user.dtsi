@@ -1,0 +1,173 @@
+/include/ "system-conf.dtsi"
+/{ 
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+		rproc_0_reserved: rproc@3ed000000 {             
+			no-map;             
+			reg = <0x0 0x3ed00000 0x0 0x2000000>;        
+		};
+	};
+
+	amba {
+	/* Shared memory */
+		shm0: shm@0 {             
+			compatible = "shm_uio";             
+			reg = <0x0 0x3ed80000 0x0 0x1000000>;         
+		};
+
+	/* IPI device */         
+		ipi_amp: ipi@ff340000  {
+			compatible = "ipi_uio";             
+			reg = <0x0 0xff340000 0x0 0x1000>;             
+			interrupt-parent = <&gic>;             
+			interrupts = <0 29 4>;         
+		};
+
+		zynqmp-rpu {
+			compatible = "xlnx,zynqmp-r5-remoteproc-1.0";
+			#address-cells = <2>;
+			#size-cells = <2>;
+			ranges;
+			core_conf = "split";
+			
+			r5_0: r5@0 {
+				#address-cells = <2>;
+				#size-cells = <2>;
+				ranges;
+				pnode-id = <0x7>;
+								
+				tcm_0_a: tcm_0@0 {
+					reg = <0x0 0xFFE00000 0x0 0x10000>;
+					pnode-id = <0xf>;
+				};
+				tcm_0_b: tcm_0@1 {
+					reg = <0x0 0xFFE20000 0x0 0x10000>;
+					pnode-id = <0x10>;
+				};
+			};
+		};
+	};
+
+	power-domains {
+		pd_r5_0: pd_r5_0 {
+			#power-domain-cells = <0x0>;
+			pd-id = <0x7>;
+		};
+		pd_tcm_0_a: pd_tcm_0_a {
+			#power-domain-cells = <0x0>;
+			pd-id = <0xf>;
+		};
+		pd_tcm_0_b: pd_tcm_0_b {
+			#power-domain-cells = <0x0>;
+			pd-id = <0x10>;
+		};
+	};
+
+	amba {
+		/* firmware memory nodes */
+		r5_0_tcm_a: tcm@ffe00000 {
+			compatible = "mmio-sram";
+			reg = <0x0 0xFFE00000 0x0 0x10000>;
+			pd-handle = <&pd_tcm_0_a>;
+		};
+
+		r5_0_tcm_b: tcm@ffe20000 {
+			compatible = "mmio-sram";
+			reg = <0x0 0xFFE20000 0x0 0x10000>;
+			pd-handle = <&pd_tcm_0_b>;
+		};
+
+		elf_ddr_0: ddr@3ed00000 {
+			compatible = "mmio-sram";
+			reg = <0x0 0x3ed00000 0x0 0x100000>;
+		};
+
+		test_r5_0: zynqmp_r5_rproc@0 {
+			compatible = "xlnx,zynqmp-r5-remoteproc-1.0";
+				reg = <0x0 0xff9a0100 0x0 0x100>,
+			      	<0x0 0xff9a0000 0x0 0x100>;
+				reg-names = "rpu_base", "rpu_glbl_base";
+				dma-ranges;
+				core_conf = "split0";
+			srams = <&r5_0_tcm_a &r5_0_tcm_b &elf_ddr_0>;
+			pd-handle = <&pd_r5_0>;
+             	};               
+	};
+};
+
+&ttc0 {
+	compatible = "ttc0";
+	status = "okay";
+};
+
+&gem3 {
+	status = "okay";
+	local-mac-address = [00 0a 35 00 02 90];
+	phy-mode = "rgmii-id";
+	phy-handle = <&phy0>;
+	phy0: phy@9 {
+		reg = <0x9>;
+		ti,rx-internal-delay = <0x5>;
+		ti,tx-internal-delay = <0x5>;
+		ti,fifo-depth = <0x1>;
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	clock-frequency = <400000>;
+
+	i2cswitch@70 { /* U7 on UZ3EG SOM */
+		compatible = "nxp,pca9542";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x70>;
+		i2c@0 { /* i2c mw 70 0 1 */
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0>;
+			/* IIC_EEPROM */
+			eeprom@51 { /* U5 on UZ3EG IOCC and U7 on the UZ7EV EVCC*/
+				compatible = "at,24c08";
+				reg = <0x51>;
+			};
+		};
+	};
+};
+
+&qspi {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+	is-dual = <1>; /* Set for dual-parallel QSPI config */
+	num-cs = <2>;
+	xlnx,fb-clk = <0x1>;
+	flash0: flash@0 {
+        /* The Flash described below doesn't match our board ("micron,n25qu256a"), but is needed */
+        /* so the Flash MTD partitions are correctly identified in /proc/mtd */
+		compatible = "micron,m25p80"; /* 32MB */
+		#address-cells = <1>;
+		#size-cells = <1>;
+		reg = <0x0>;
+		spi-tx-bus-width = <1>;
+		spi-rx-bus-width = <4>; /* FIXME also DUAL configuration possible */
+		spi-max-frequency = <108000000>; /* Set to 108000000 Based on DC1 spec */
+	};
+};
+
+/* SD0 eMMC, 8-bit wide data bus */
+&sdhci0 {
+	status = "okay";
+	bus-width = <8>;
+	max-frequency = <50000000>;
+};
+
+/* SD1 with level shifter */
+&sdhci1 {
+	status = "okay";
+	max-frequency = <50000000>;
+	no-1-8-v;	/* for 1.0 silicon */
+    disable-wp;
+};
