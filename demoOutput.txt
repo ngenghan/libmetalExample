@@ -1,0 +1,158 @@
+INIT: Entering runlevel: 5
+Configuring network interfaces... [   14.473487] pps pps0: new PPS source ptp0
+[   14.477572] macb ff0e0000.ethernet: gem-ptp-timer ptp clock registered.
+[   14.484366] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+done.
+Starting Dropbear SSH server: Generating 2048 bit rsa key, this may take a while...
+Public key portion is:
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDObyCIJpB82R4Gi9wlWUnlxgiai04F/YAs5iH5rxF3vaTUIyX+dRVi27vs/AWoGLsQwpfpdRkynzbw5vGJ6FLnYh7T1FvF/zKcmMpT3IurXghs2cFNqZMfRHfkOaFF11o4YOoeHXSQRO0Io08oLHbFjO5TuoIfDoGR5SDfeLP4Zvub4GCw5kLcqGuD1We01wmlMdpBnnno/m1k4GT5p0gFHTTXZ/LqMDUjJYDvFPi+ehs1pJKwrzY6sKLx9j4LNv82R5uYBcsUVq2LRtbBY6o2j4sMqazVbeHVuXCoqyG9E/ZrGCcXJL8IfaM/Dtd3wyw7rPj6AsfpfaahVR50pit5 root@libMetal
+Fingerprint: sha1!! 8c:0d:c8:e6:92:75:bf:bc:ba:cb:5a:e7:74:c4:7a:7a:5d:6b:84:49
+dropbear.
+Starting internet superserver: inetd.
+Starting syslogd/klogd: done
+Starting tcf-agent: OK
+
+PetaLinux 2019.1 libMetal /dev/ttyPS0
+
+libMetal login: [   17.522974] macb ff0e0000.ethernet eth0: link up (1000/Full)
+[   17.528655] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+root
+Password:
+root@libMetal:~# cd /lib/firmware/
+root@libMetal:/lib/firmware# echo libMetal_R5.elf > /sys/class/remoteproc/remoteproc0/firmware
+root@libMetal:/lib/firmware# echo start > /sys/class/remoteproc/remoteproc0/state
+[   85.686716] remoteproc remoteproc0: powering up r5@0
+[   85.692737] remoteproc remoteproc0: Booting fw image libMetal_R5.elf, size 608564
+0   85.706451]  r5@0: RPU broeogti sftreormi nTgC:M .
+ , name=ff310000.ipi
+                    registering: 1, name=3ed80000.shm
+                                                     registering: 2, name=ff110000.ttc
+
+SERVER> ====== libmetal demo: shared memory ======
+
+SERVER> Wait for shared memory demo to start.
+[   85.706490] remoteproc remoteproc0: remote processor r5@0 is now up
+root@libMetal:/lib/firmware# libmetal_amp_demo
+metal: info:      Registered shmem provider linux_shm.
+metal: info:      Reg
+SERVER> Demo has started.
+
+SERVER> Shared memory test finished
+
+SERVER> ====== libmetal demo: atomic operation over shared memory ======
+
+SERVER> Starting atomic add on shared memory demo.
+                                                  istered shmem provider ion.reserved.
+metal: info:      Registered shmem provider ion.ion_system_contig_heap.
+metal: info:      Registered shmem provider ion.ion_system_heap.
+CLIENT> ****** libmetal demo: shared memory ******
+metal: info:      metal_uio_dev_open: No IRQ for device 3ed80000.shm.
+CLIENT> Setting up shared memory demo.
+CLIENT> Starting shared memory demo.
+CLIENT> Sending message: Hello World - libmetal shared memory demo
+CLIENT> Message Received: Hello World - libmetal shared memory demo
+CLIENT> Shared memory demo: Passed.
+CLIENT> ****** libmetal demo: atomic operation over shared memory ******
+meta
+SERVER> Shared memory with atomics test finished
+
+SERVER> ====== libmetal demo: IPI and shared memory ======
+
+SERVER> Wait for echo test to start.
+                                    l: info:      metal_uio_dev_open: No IRQ for device 3ed80000.shm.
+CLIENT> Starting atomic shared memory task.
+CLIENT> shm atomic demo PASSED!
+CLIENT> ****** libmetal demo: IPI and shared memory ******
+metal: info:      metal_uio_dev_open: No IRQ for device 3ed80000.shm.
+CLIENT> Start echo flood testing....
+CLIENT> Sending msgs to the remote.
+CLIENT> Waiting for messages to echo ba
+SERVER> Received shutdown message
+
+SERVER> IPI with shared memory demo finished with exit code: 0.
+
+SERVER> ====== libmetal demo: IPI latency ======
+
+SERVER> Starting IPI latency demo
+ck and verify.
+CLIENT> Kick remote to notify shutdown message sent...
+CLIENT> Total packages: 1024, time_avg = 0s, 3390ns
+CLIENT> ****** libmetal demo: IPI latency ******
+metal: info:      metal_uio_dev_open: No IRQ for device 3ed80000.shm.
+CLIENT> Starting IPI latency task
+
+SERVER> C=L=I=E=N=T=>  lIiPbIm eltaatle ndceym or:e ssuhlatr ew memory latency ======
+
+SERVER> Starting IPI latency demo
+ith 1000 iterations:
+CLIENT> APU to RPU average latency: 26 ns
+CLIENT> RPU to APU average latency: 8 ns
+CLIENT> Finished IPI latency task
+CLIENT> ****** libmetal demo: shared memory latency ******
+metal: info:      metal_uio_dev_open: No IRQ for device 3ed80000.shm.
+CLIENT> Starting IPI latency task
+CLIENT> package size 16 latency result:
+CLIENT> APU to RPU average latency: 5 ns
+CLIENT> RPU to APU average latency: 5 ns
+CLIENT> package size 32 latency result:
+CLIENT> APU to RPU average latency: 22 ns
+CLIENT> RPU to APU average latency: 19 ns
+CLIENT> package size 64 latency result:
+CLIENT> APU to RPU average latency: 32 ns
+CLIENT> RPU to APU average latency: 11 ns
+CLIENT> package size 128 latency result:
+CLIENT> APU to RPU average latency: 21 ns
+CLIENT> RPU to APU average latency: 32 ns
+CLIENT> package size 256 latency result:
+CLIENT> APU to RPU average latency: 3 ns
+CLIENT> RPU to APU average latency: 5 ns
+CLIENT> package size 512 latency result:
+CLIENT> APU to RPU average latency: 9 ns
+CLIENT> RPU to APU average latency: 4 ns
+CLIENT> package size 1024 latency result:
+CLIENT> APU to RPU ave
+SERVER> ====== libmetal demo: shared memory throughput ======
+                                                             rage latency: 10 ns
+CLIENT> RPU to APU average latency: 16 ns
+CLIENT> Finished shared memory latency task
+
+SERVER> Starting shared mem throughput demo
+                                           CLIENT> ****** libmetal demo: shared memory throughput ******
+metal: info:      metal_uio_dev_open: No IRQ for device 3ed80000.shm.
+CLIENT> Starting shared mem throughput demo
+CLIENT> Shared memory throughput of pkg size 16 :
+CLIENT>     APU send: e22471, 0 MB/s
+CLIENT>     APU receive: 23e72f2, 0 MB/s
+CLIENT>     RPU send: 23bb7e4, 0 MB/s
+CLIENT>     RPU receive: 2d9726e, 0 MB/s
+CLIENT> Shared memory throughput of pkg size 32 :
+CLIENT>     APU send: 80a26d, 1 MB/s
+CLIENT>     APU receive: 1491a66, 0 MB/s
+CLIENT>     RPU send: 12c3340, 0 MB/s
+CLIENT>     RPU receive: 1e4fa41, 0 MB/s
+CLIENT> Shared memory throughput of pkg size 64 :
+CLIENT>     APU send: 48245c, 5 MB/s
+CLIENT>     APU receive: f47245, 1 MB/s
+CLIENT>     RPU send: a24b45, 2 MB/s
+CLIENT>     RPU receive: 1582031, 1 MB/s
+CLIENT> Shared memory throughput of pkg size 128 :
+CLIENT>     APU send: 2f0671, 16 MB/s
+CLIENT>     APU receive: dd4728, 3 MB/s
+CLIENT>     RPU send: 631e28, 7 MB/s
+CLIENT>     RPU receive: 113352c, 2 MB/s
+CLIENT> Shared memory throughput of pkg size 256 :
+CLIENT>     APU send: 20f748, 46 MB/s
+CLIENT>     APU receive: d57a84, 7 MB/s
+CLIENT>     RPU send: 42dc94, 22 MB/s
+CLIENT>     RPU receive: fa663d, 6 MB/s
+CLIENT> Shared memory throughput of pkg size 512 :
+CLIENT>     APU send: 1c1781, 108 MB/s
+CLIENT>     APU receive: c4f881, 15 MB/s
+CLIENT>     RPU send: 2e9209, 65 MB/s
+CLIENT>     RPU receive: e4b34b, 13 MB/s
+CLIENT> Shared memory throughput of pkg size 1024 :
+CLIENT>     APU send: 19a32a, 238 MB/s
+CLIENT>     APU receive: ce47da, 29 MB/s
+CLIENT>     RPU send: 289eaf, 150 MB/s
+CLIENT>     RPU receive: daf61b, 27 MB/s
+CLIENT> Finished shared memory throughput
